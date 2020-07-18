@@ -30,5 +30,4 @@ const getNavigation = (userId) => {
     return links;
 }
 
-
 export default getNavigation;
