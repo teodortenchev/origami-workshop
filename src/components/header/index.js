@@ -9,7 +9,7 @@ const Header = () => {
 
     return (
         <header className={styles.navigation}>
-            <img className={styles.logo} src={logo} />
+            <img className={styles.logo} src={logo} alt="" />
            {
                links.map(nav => {
                    return (
