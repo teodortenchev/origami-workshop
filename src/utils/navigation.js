@@ -19,7 +19,7 @@ const getNavigation = (userId) => {
         },
         {
             title: "Log In",
-            link: "/"
+            link: "/login"
         },
         {
             title: "Logout",
