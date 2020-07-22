@@ -29,7 +29,7 @@ class LoginPage extends Component {
 
         return (
             <PageLayout>
-
+                <Title title="Login Page" />
                 <div className={styles.container}>
 
                     <form>
