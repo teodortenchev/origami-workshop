@@ -1,5 +1,4 @@
 import React from 'react';
-import Origamis from '../origamis';
 import styles from './index.module.css';
 import image from '../../images/blue-origami-bird.png'
 
