@@ -11,12 +11,44 @@ class LoginPage extends Component {
         super(props);
 
         this.state = {
-            email: "",
-            password: ""         
+            username: "",
+            password: ""
         };
     }
 
-    onChange = (event, type) => {
+    handleSubmit = async event => {
+        event.preventDefault();
+
+        const { username, password } = this.state;
+
+        try {
+            const promise = await fetch('http://localhost:9999/api/user/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const authToken = promise.headers.get('Authorization');
+            document.cookie = `x-auth-token=${authToken}`;
+            
+            const response = await promise.json();
+   
+            if (response.username && authToken) {
+                this.props.history.push('/');
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+      
+    }
+
+    handleChange = (event, type) => {
         const newState = {};
         newState[type] = event.target.value;
         this.setState(newState);
@@ -25,19 +57,19 @@ class LoginPage extends Component {
 
     render() {
 
-        const { email, password } = this.state;
+        const { username, password } = this.state;
 
         return (
             <PageLayout>
                 <Title title="Login Page" />
                 <div className={styles.container}>
 
-                    <form>
-                        <FormControl fieldName="Email" fieldType="email" id="email"
-                            autocomplete="usernme" value={email} onChange={(e) => this.onChange(e, 'email')} />
+                    <form onSubmit={this.handleSubmit}>
+                        <FormControl fieldName="Email" fieldType="username" id="username"
+                            autocomplete="usernme" value={username} onChange={(e) => this.handleChange(e, 'username')} />
                         <FormControl fieldName="Password" fieldType="password" id="password"
-                            autocomplete="current-password" value={password} onChange={(e) => this.onChange(e, 'password')} />
-                        
+                            autocomplete="current-password" value={password} onChange={(e) => this.handleChange(e, 'password')} />
+
                         <div>
                             <SubmitButton title="Login" />
                         </div>
