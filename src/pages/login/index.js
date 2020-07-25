@@ -37,9 +37,7 @@ class LoginPage extends Component {
             document.cookie = `x-auth-token=${authToken}`;
             
             const response = await promise.json();
-    
-            console.log(response);
-
+   
             if (response.username && authToken) {
                 this.props.history.push('/');
             }
