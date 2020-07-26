@@ -4,6 +4,8 @@ import PageLayout from '../../components/page-layout';
 import Title from '../../components/title'
 import SubmitButton from '../../components/button/submit-button';
 import FormControl from '../../components/formControl';
+import authenticate from '../../utils/authenticate';
+import UserContext from '../../Context';
 
 class RegisterPage extends Component {
 
@@ -11,13 +13,29 @@ class RegisterPage extends Component {
         super(props);
 
         this.state = {
-            email: "",
+            username: "",
             password: "",
             rePassword: ""
         };
     }
 
-    onChange = (event, type) => {
+    static contextType = UserContext
+
+    handleSubmit = async event => {
+        event.preventDefault();
+
+        const { username, password, rePassword } = this.state;
+
+        await authenticate('http://localhost:9999/api/user/register', { username, password }, (user) => {
+            console.log('Successful register');
+            this.context.logIn(user);
+            this.props.history.push('/');
+        }, (e) => {
+            console.log('Error', e)
+        })
+    }
+
+    handleChange = (event, type) => {
         const newState = {};
         newState[type] = event.target.value;
         this.setState(newState);
@@ -26,7 +44,7 @@ class RegisterPage extends Component {
 
     render() {
 
-        const { email, password, rePassword } = this.state;
+        const { username, password, rePassword } = this.state;
 
         return (
             <PageLayout>
@@ -34,13 +52,13 @@ class RegisterPage extends Component {
 
                 <div className={styles.container}>
 
-                    <form>
-                        <FormControl fieldName="Email" fieldType="email" id="email"
-                            autocomplete="" value={email} onChange={(e) => this.onChange(e, 'email')} />
+                    <form onSubmit={this.handleSubmit} >
+                        <FormControl fieldName="Email" fieldType="text" id="username"
+                            autocomplete="" value={username} onChange={(e) => this.handleChange(e, 'username')} />
                         <FormControl fieldName="Password" fieldType="password" id="password"
-                            autocomplete="" value={password} onChange={(e) => this.onChange(e, 'password')} />
+                            autocomplete="" value={password} onChange={(e) => this.handleChange(e, 'password')} />
                         <FormControl fieldName="Confirm Password" fieldType="password" id="rePassword"
-                            autocomplete="" value={rePassword} onChange={(e) => this.onChange(e, 'rePassword')} />
+                            autocomplete="" value={rePassword} onChange={(e) => this.handleChange(e, 'rePassword')} />
                         <div>
                             <SubmitButton title="Register" />
                         </div>

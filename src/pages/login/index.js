@@ -4,6 +4,8 @@ import PageLayout from '../../components/page-layout';
 import Title from '../../components/title'
 import SubmitButton from '../../components/button/submit-button';
 import FormControl from '../../components/formControl';
+import authenticate from '../../utils/authenticate';
+import UserContext from '../../Context';
 
 class LoginPage extends Component {
 
@@ -16,36 +18,20 @@ class LoginPage extends Component {
         };
     }
 
+    static contextType = UserContext;
+
     handleSubmit = async event => {
         event.preventDefault();
 
         const { username, password } = this.state;
 
-        try {
-            const promise = await fetch('http://localhost:9999/api/user/login', {
-                method: 'POST',
-                body: JSON.stringify({
-                    username,
-                    password
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            const authToken = promise.headers.get('Authorization');
-            document.cookie = `x-auth-token=${authToken}`;
-            
-            const response = await promise.json();
-   
-            if (response.username && authToken) {
-                this.props.history.push('/');
-            }
-
-        } catch (e) {
-            console.log(e);
-        }
-      
+        await authenticate('http://localhost:9999/api/user/login', { username, password }, (user) => {
+            console.log('Successful login');
+            this.context.logIn(user);
+            this.props.history.push('/');
+        }, (e) => {
+            console.log('Error', e)
+        })
     }
 
     handleChange = (event, type) => {
