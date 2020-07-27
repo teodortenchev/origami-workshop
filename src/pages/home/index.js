@@ -9,9 +9,6 @@ class HomePage extends Component {
 static contextType = UserContext;
 
   render() {
-
-    console.log("Context: ", this.context);
-
     return (
       <PageLayout>
         <Title title ="Publications" />
